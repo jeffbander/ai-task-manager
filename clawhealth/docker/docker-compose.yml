@@ -1,0 +1,67 @@
+# ClawHealth Docker Compose
+#
+# Adapted from OpenClaw's Docker deployment model.
+# This provisions a single patient's ClawBox with all dependencies.
+#
+# Usage:
+#   cp ../.env.example .env   # Fill in patient + API credentials
+#   docker compose up -d
+
+services:
+  clawbox:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: clawbox-${PATIENT_ID:-demo}
+    env_file:
+      - ../.env
+    ports:
+      - "${GATEWAY_PORT:-18789}:18789"
+    volumes:
+      - patient-data:/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - clawhealth
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    image: redis:7-alpine
+    container_name: clawbox-redis-${PATIENT_ID:-demo}
+    command: redis-server --maxmemory 64mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    networks:
+      - clawhealth
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.25'
+
+volumes:
+  patient-data:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+  clawhealth:
+    driver: bridge
