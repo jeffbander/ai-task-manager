@@ -1,0 +1,45 @@
+{
+  "name": "clawhealth",
+  "version": "0.1.0",
+  "description": "Patient-owned autonomous AI health coordinator — OpenClaw architecture adapted for healthcare",
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "tsx watch gateway/src/index.ts",
+    "build": "tsc",
+    "start": "node dist/gateway/src/index.js",
+    "test": "vitest",
+    "lint": "eslint .",
+    "docker:build": "docker build -t clawhealth/clawbox -f docker/Dockerfile .",
+    "docker:up": "docker compose -f docker/docker-compose.yml up -d",
+    "docker:down": "docker compose -f docker/docker-compose.yml down",
+    "patient:provision": "tsx scripts/provision-patient.ts",
+    "patient:onboard": "tsx scripts/onboard-patient.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@whiskeysockets/baileys": "^6.7.0",
+    "better-sqlite3": "^11.0.0",
+    "bullmq": "^5.0.0",
+    "chromadb": "^1.9.0",
+    "dotenv": "^16.4.0",
+    "express": "^4.21.0",
+    "ioredis": "^5.4.0",
+    "pino": "^9.0.0",
+    "twilio": "^5.0.0",
+    "ws": "^8.18.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "@types/ws": "^8.5.0",
+    "eslint": "^9.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.0.0"
+  }
+}
