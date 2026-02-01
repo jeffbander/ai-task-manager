@@ -1,96 +1,113 @@
 /**
  * Job Scheduler
  *
- * Adapted from OpenClaw's cron system. OpenClaw supports scheduled tasks
- * via its Gateway (cron jobs and webhook handlers). ClawHealth uses BullMQ
- * for reliable, persistent job scheduling — critical for medication reminders
- * that must not be missed.
+ * Adapted from OpenClaw's cron system. For POC, uses simple setInterval-based
+ * scheduling (no Redis dependency needed for initial pilot). Can be upgraded
+ * to BullMQ + Redis for production reliability.
  *
  * Job types:
- * - medication_reminder: Scheduled SMS at medication times
+ * - medication_reminder: SMS at medication times
  * - daily_checkin: Morning check-in message
- * - appointment_reminder: Reminder before appointments (24h, 2h)
- * - vitals_check: Periodic request for vitals input
- * - physician_summary: Daily/weekly summary for the supervising doctor
- * - refill_alert: Medication refill reminders
+ * - appointment_reminder: Before appointments (24h, 2h)
+ * - vitals_request: Periodic request for vitals input
+ * - physician_summary: Daily summary for the doctor
  */
 
 import type { Logger } from "pino";
 
-interface JobData {
-  type: string;
+interface SchedulerConfig {
+  redisUrl: string;
   patientId: string;
+  logger: Logger;
+  onJob: (jobType: string, payload: Record<string, unknown>) => Promise<string>;
+  sendMessage: (body: string) => Promise<void>;
+}
+
+interface ScheduledJob {
+  id: string;
+  type: string;
+  cronHour: number;
+  cronMinute: number;
   payload: Record<string, unknown>;
+  lastRun?: Date;
 }
 
 export class JobScheduler {
-  private redisUrl: string;
+  private config: SchedulerConfig;
   private logger: Logger;
+  private jobs: ScheduledJob[] = [];
+  private timer: ReturnType<typeof setInterval> | null = null;
 
-  constructor(redisUrl: string, logger: Logger) {
-    this.redisUrl = redisUrl;
-    this.logger = logger.child({ component: "scheduler" });
+  constructor(config: SchedulerConfig) {
+    this.config = config;
+    this.logger = config.logger.child({ component: "scheduler" });
   }
 
-  /**
-   * Start the job scheduler and register recurring jobs.
-   * In production, this connects to Redis via BullMQ.
-   * For MVP, can fall back to in-memory scheduling with node-cron.
-   */
   async start(): Promise<void> {
-    this.logger.info("Job scheduler started");
+    // Register default daily jobs
+    this.addRecurring({
+      id: "daily-checkin",
+      type: "daily_checkin",
+      cronHour: 8,
+      cronMinute: 0,
+      payload: {},
+    });
 
-    // TODO: Initialize BullMQ queues
-    // const { Queue, Worker } = await import('bullmq');
-    // const connection = new IORedis(this.redisUrl);
-    //
-    // Queues:
-    // - clawhealth:medication-reminders
-    // - clawhealth:daily-checkins
-    // - clawhealth:appointment-reminders
-    // - clawhealth:vitals-checks
-    // - clawhealth:physician-summaries
-    //
-    // Each queue has a Worker that processes jobs by calling
-    // the appropriate Health Skill through the Agent Runtime.
+    this.addRecurring({
+      id: "evening-checkin",
+      type: "evening_checkin",
+      cronHour: 20,
+      cronMinute: 0,
+      payload: {},
+    });
+
+    // Check every 60 seconds if any jobs should fire
+    this.timer = setInterval(() => this.tick(), 60_000);
+    this.logger.info({ jobCount: this.jobs.length }, "Scheduler started");
   }
 
-  /**
-   * Schedule a one-time job (e.g., appointment reminder 24h before).
-   */
-  async scheduleOnce(jobData: JobData, runAt: Date): Promise<string> {
-    const delay = runAt.getTime() - Date.now();
-    if (delay <= 0) {
-      this.logger.warn({ jobData }, "Scheduled time is in the past, running immediately");
+  addRecurring(job: ScheduledJob): void {
+    // Deduplicate
+    this.jobs = this.jobs.filter((j) => j.id !== job.id);
+    this.jobs.push(job);
+    this.logger.info({ jobId: job.id, hour: job.cronHour, min: job.cronMinute }, "Recurring job registered");
+  }
+
+  removeJob(jobId: string): void {
+    this.jobs = this.jobs.filter((j) => j.id !== jobId);
+  }
+
+  private async tick(): Promise<void> {
+    const now = new Date();
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+
+    for (const job of this.jobs) {
+      if (job.cronHour === hour && job.cronMinute === minute) {
+        // Don't fire the same job twice in the same minute
+        if (job.lastRun && now.getTime() - job.lastRun.getTime() < 120_000) {
+          continue;
+        }
+
+        job.lastRun = now;
+        this.logger.info({ jobId: job.id, type: job.type }, "Firing scheduled job");
+
+        try {
+          const message = await this.config.onJob(job.type, job.payload);
+          if (message) {
+            await this.config.sendMessage(message);
+          }
+        } catch (err) {
+          this.logger.error({ err, jobId: job.id }, "Scheduled job failed");
+        }
+      }
     }
-
-    // TODO: Add to BullMQ with delay
-    const jobId = `job_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    this.logger.info({ jobId, type: jobData.type, runAt: runAt.toISOString() }, "Job scheduled");
-    return jobId;
   }
 
-  /**
-   * Schedule a recurring job (e.g., daily medication reminder at 8am).
-   */
-  async scheduleRecurring(
-    jobData: JobData,
-    cronExpression: string
-  ): Promise<string> {
-    // TODO: Add repeatable job to BullMQ
-    const jobId = `recurring_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    this.logger.info(
-      { jobId, type: jobData.type, cron: cronExpression },
-      "Recurring job scheduled"
-    );
-    return jobId;
-  }
-
-  /**
-   * Cancel a scheduled job.
-   */
-  async cancel(jobId: string): Promise<void> {
-    // TODO: Remove from BullMQ
-    this.logger.info({ jobId }, "Job cancelled");
+  stop(): void {
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
   }
 }

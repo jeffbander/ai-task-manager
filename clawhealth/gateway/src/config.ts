@@ -18,9 +18,7 @@ export const config = {
   physicianId: process.env.PHYSICIAN_ID || "",
   physicianName: process.env.PHYSICIAN_NAME || "",
 
-  // Gateway networking (OpenClaw defaults to ws://127.0.0.1:18789)
   gatewayPort: parseInt(process.env.GATEWAY_PORT || "18789", 10),
-  gatewayAuthToken: process.env.GATEWAY_AUTH_TOKEN || "",
 
   // Twilio configuration (primary communication channel)
   twilio: {
@@ -38,14 +36,7 @@ export const config = {
     modelSafety: process.env.CLAUDE_MODEL_SAFETY || "claude-haiku-3-5-20241022",
   },
 
-  // Voice (ElevenLabs TTS + Deepgram STT)
-  voice: {
-    elevenlabsApiKey: process.env.ELEVENLABS_API_KEY || "",
-    elevenlabsVoiceId: process.env.ELEVENLABS_VOICE_ID || "",
-    deepgramApiKey: process.env.DEEPGRAM_API_KEY || "",
-  },
-
-  // Database encryption
+  databasePath: process.env.DATABASE_PATH || "/data/db/health.db",
   encryptionKey: process.env.ENCRYPTION_KEY || "",
 
   // Redis (for BullMQ job scheduling)

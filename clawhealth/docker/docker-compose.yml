@@ -1,24 +1,104 @@
-# ClawHealth Docker Compose
+# ClawHealth — Single Server Deployment
 #
-# Adapted from OpenClaw's Docker deployment model.
-# This provisions a single patient's ClawBox with all dependencies.
+# This is the MASTER compose file that runs everything on one server:
+#   - Nginx reverse proxy (external entry point)
+#   - SMS Router (routes Twilio webhooks to correct patient container)
+#   - Redis (shared job queue)
+#   - Doctor Portal (physician dashboard)
+#
+# Patient ClawBox containers are provisioned dynamically via the CLI:
+#   ./scripts/clawctl.sh add-patient --name "Jane Doe" --phone "+15551234567"
+#
+# That generates a per-patient compose override and starts the container.
 #
 # Usage:
-#   cp ../.env.example .env   # Fill in patient + API credentials
-#   docker compose up -d
+#   1. cp ../.env.example ../.env  (fill in Twilio + Anthropic keys)
+#   2. docker compose up -d        (starts shared infrastructure)
+#   3. ../scripts/clawctl.sh add-patient ...  (provisions patient containers)
 
 services:
-  clawbox:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
-    container_name: clawbox-${PATIENT_ID:-demo}
-    env_file:
-      - ../.env
+  # === SHARED INFRASTRUCTURE ===
+
+  # Nginx — single entry point for all external traffic
+  nginx:
+    image: nginx:alpine
+    container_name: clawhealth-nginx
     ports:
-      - "${GATEWAY_PORT:-18789}:18789"
+      - "80:80"
+      - "443:443"
     volumes:
-      - patient-data:/data
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - nginx-logs:/var/log/nginx
+      # Uncomment for SSL:
+      # - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      router:
+        condition: service_healthy
+    networks:
+      - clawhealth
+    restart: unless-stopped
+
+  # SMS Router — directs Twilio webhooks to correct patient container
+  router:
+    build:
+      context: ../router
+      dockerfile: Dockerfile
+    container_name: clawhealth-router
+    environment:
+      - REGISTRY_PATH=/data/registry/patients.json
+      - ROUTER_PORT=3000
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    volumes:
+      - registry-data:/data/registry
+    networks:
+      - clawhealth
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+  # Redis — shared job queue for all patient containers
+  redis:
+    image: redis:7-alpine
+    container_name: clawhealth-redis
+    command: >
+      redis-server
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1000
+      --requirepass ${REDIS_PASSWORD:-clawhealth_redis_dev}
+    volumes:
+      - redis-data:/data
+    networks:
+      - clawhealth
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-clawhealth_redis_dev}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+  # Doctor Portal — physician dashboard and API
+  doctor-portal:
+    build:
+      context: ../doctor-portal
+      dockerfile: Dockerfile
+    container_name: clawhealth-portal
+    environment:
+      - FLASK_SECRET_KEY=${PORTAL_SECRET_KEY:-change_me_in_production}
+      - REGISTRY_PATH=/data/registry/patients.json
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-clawhealth_redis_dev}@redis:6379
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    volumes:
+      - registry-data:/data/registry
+      - portal-data:/data/portal
     depends_on:
       redis:
         condition: service_healthy
@@ -30,38 +110,14 @@ services:
         limits:
           memory: 512M
           cpus: '0.5'
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-  redis:
-    image: redis:7-alpine
-    container_name: clawbox-redis-${PATIENT_ID:-demo}
-    command: redis-server --maxmemory 64mb --maxmemory-policy allkeys-lru
-    volumes:
-      - redis-data:/data
-    networks:
-      - clawhealth
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-    deploy:
-      resources:
-        limits:
-          memory: 128M
-          cpus: '0.25'
 
 volumes:
-  patient-data:
-    driver: local
+  nginx-logs:
+  registry-data:
   redis-data:
-    driver: local
+  portal-data:
 
 networks:
   clawhealth:
     driver: bridge
+    name: clawhealth
