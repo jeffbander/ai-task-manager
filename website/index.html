@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHealth AI — Your Autonomous Healthcare Coordinator</title>
+  <meta name="description" content="ClawHealth is a HIPAA-compliant autonomous AI agent that manages your healthcare — scheduling appointments, checking medication interactions, finding specialists, and keeping your doctors informed.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="container nav-inner">
+      <a href="#" class="nav-logo">
+        <div class="logo-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="8" fill="url(#logo-grad)"/>
+            <path d="M16 6L16 26M6 16L26 16" stroke="white" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="16" cy="16" r="4" fill="white" opacity="0.3"/>
+            <defs><linearGradient id="logo-grad" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#0EA5E9"/><stop offset="1" stop-color="#6366F1"/></linearGradient></defs>
+          </svg>
+        </div>
+        <span class="logo-text">ClawHealth<span class="logo-ai">AI</span></span>
+      </a>
+      <div class="nav-links" id="nav-links">
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#how-it-works" class="nav-link">How It Works</a>
+        <a href="#hipaa" class="nav-link">HIPAA Compliance</a>
+        <a href="#use-cases" class="nav-link">Use Cases</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+      </div>
+      <div class="nav-actions">
+        <a href="#contact" class="btn btn-ghost">Contact Sales</a>
+        <a href="#waitlist" class="btn btn-primary">Join Waitlist</a>
+      </div>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="hero-bg">
+      <div class="hero-gradient"></div>
+      <div class="hero-grid"></div>
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-orb hero-orb-3"></div>
+    </div>
+    <div class="container hero-content">
+      <div class="hero-badge animate-fade-up">
+        <span class="badge-dot"></span>
+        HIPAA Compliant &middot; FDA Safety Framework &middot; Physician Supervised
+      </div>
+      <h1 class="hero-title animate-fade-up delay-1">
+        Your Personal AI<br>
+        <span class="gradient-text">Healthcare Coordinator</span>
+      </h1>
+      <p class="hero-subtitle animate-fade-up delay-2">
+        ClawHealth is an autonomous AI agent that manages your entire healthcare journey
+        &mdash; from scheduling appointments and checking medication interactions to finding
+        specialists and keeping your doctors updated on your progress. All secured with
+        military-grade encryption and full HIPAA compliance.
+      </p>
+      <div class="hero-cta animate-fade-up delay-3">
+        <a href="#waitlist" class="btn btn-primary btn-lg">
+          Get Early Access
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#demo" class="btn btn-outline btn-lg">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><polygon points="8,5 16,10 8,15" fill="currentColor"/></svg>
+          Watch Demo
+        </a>
+      </div>
+      <div class="hero-stats animate-fade-up delay-4">
+        <div class="stat">
+          <span class="stat-number" data-count="99.9">99.9%</span>
+          <span class="stat-label">Uptime SLA</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-number">AES-256</span>
+          <span class="stat-label">Encryption</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-number">&lt;2s</span>
+          <span class="stat-label">Response Time</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-number">24/7</span>
+          <span class="stat-label">Always Available</span>
+        </div>
+      </div>
+    </div>
+    <!-- Floating chat preview -->
+    <div class="hero-preview animate-fade-up delay-4">
+      <div class="chat-window">
+        <div class="chat-header">
+          <div class="chat-header-dot green"></div>
+          <span>ClawHealth AI Assistant</span>
+          <span class="chat-header-badge">Encrypted</span>
+        </div>
+        <div class="chat-messages" id="chat-demo">
+          <div class="chat-msg user">
+            <div class="chat-bubble user-bubble">I've been having headaches after starting my new blood pressure medication</div>
+          </div>
+          <div class="chat-msg ai">
+            <div class="chat-avatar">AI</div>
+            <div class="chat-bubble ai-bubble">
+              I see you started Lisinopril 10mg on Jan 15. Headaches are a common side effect that typically resolves within 1-2 weeks. I'll note this in your record and flag it for Dr. Martinez.
+              <br><br>
+              <strong>Would you like me to:</strong>
+              <br>1. Schedule a follow-up with Dr. Martinez
+              <br>2. Check for alternative medications
+              <br>3. Set a reminder to reassess in one week
+            </div>
+          </div>
+          <div class="chat-msg user">
+            <div class="chat-bubble user-bubble">Schedule a follow-up and set the reminder please</div>
+          </div>
+          <div class="chat-msg ai">
+            <div class="chat-bubble ai-bubble">
+              Done! I've scheduled a follow-up with Dr. Martinez for Feb 5 at 2:30 PM and set a headache reassessment reminder for next Monday. I've also sent Dr. Martinez a summary of your symptoms. Take care!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Trusted By / Social Proof -->
+  <section class="social-proof">
+    <div class="container">
+      <p class="social-proof-label">Built with enterprise-grade infrastructure trusted by</p>
+      <div class="logo-row">
+        <div class="partner-logo">FHIR R4</div>
+        <div class="partner-logo">HL7</div>
+        <div class="partner-logo">AWS HIPAA</div>
+        <div class="partner-logo">SOC 2</div>
+        <div class="partner-logo">HITRUST</div>
+        <div class="partner-logo">ONC Certified</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="section features" id="features">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Capabilities</span>
+        <h2 class="section-title">Everything You Need to<br><span class="gradient-text">Manage Your Health</span></h2>
+        <p class="section-subtitle">ClawHealth combines clinical AI reasoning with real-time health data to provide comprehensive, autonomous healthcare coordination.</p>
+      </div>
+      <div class="features-grid">
+        <!-- Feature 1: Appointment Management -->
+        <div class="feature-card" data-aos="fade-up">
+          <div class="feature-icon blue">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">Smart Appointment Scheduling</h3>
+          <p class="feature-desc">AI automatically finds optimal appointment times, coordinates across multiple providers, sends reminders, and handles rescheduling. Integrates with major EHR systems.</p>
+          <ul class="feature-list">
+            <li>Auto-schedule based on your availability</li>
+            <li>Multi-provider coordination</li>
+            <li>Pre-visit preparation checklists</li>
+            <li>Automated reminders via SMS, WhatsApp, or voice</li>
+          </ul>
+        </div>
+
+        <!-- Feature 2: Medication Management -->
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="feature-icon green">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3"/>
+              <line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">Medication Interaction Checker</h3>
+          <p class="feature-desc">Real-time analysis of drug interactions, side effects, and contraindications using FDA databases. Never worry about dangerous medication combinations again.</p>
+          <ul class="feature-list">
+            <li>Cross-reference all active medications</li>
+            <li>FDA adverse event database integration</li>
+            <li>Automated refill coordination with pharmacies</li>
+            <li>Adherence tracking with smart reminders</li>
+          </ul>
+        </div>
+
+        <!-- Feature 3: Find Specialists -->
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="feature-icon purple">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              <path d="M11 8v6M8 11h6"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">Specialist Finder</h3>
+          <p class="feature-desc">AI-powered specialist matching based on your condition, insurance, location, and patient reviews. Get referred to the right expert the first time.</p>
+          <ul class="feature-list">
+            <li>Insurance network verification</li>
+            <li>Quality metrics and patient ratings</li>
+            <li>Automated referral coordination</li>
+            <li>Wait time and availability analysis</li>
+          </ul>
+        </div>
+
+        <!-- Feature 4: Doctor Updates -->
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="feature-icon orange">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 12v6M9 15h6"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">Physician Progress Reports</h3>
+          <p class="feature-desc">Automatically compiles and sends structured progress updates to your care team. Your doctors always have the latest information about your health.</p>
+          <ul class="feature-list">
+            <li>FHIR-compliant clinical summaries</li>
+            <li>Vital trends and symptom tracking</li>
+            <li>Severity-tiered alert system</li>
+            <li>CCM billing time documentation</li>
+          </ul>
+        </div>
+
+        <!-- Feature 5: Health Advice -->
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+          <div class="feature-icon teal">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+              <path d="M8 10h.01M12 10h.01M16 10h.01"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">24/7 Health Guidance</h3>
+          <p class="feature-desc">Get evidence-based health advice anytime via text, voice, or chat. Powered by clinical guidelines with physician oversight for safety.</p>
+          <ul class="feature-list">
+            <li>Evidence-based clinical guidance</li>
+            <li>Symptom assessment with triage</li>
+            <li>Preventive care recommendations</li>
+            <li>Emergency detection and 911 guidance</li>
+          </ul>
+        </div>
+
+        <!-- Feature 6: Vitals Monitoring -->
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+          <div class="feature-icon red">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">Vital Signs Monitoring</h3>
+          <p class="feature-desc">Continuous monitoring of blood pressure, heart rate, glucose, weight, SpO2, and more. Integrates with Apple Health, Google Fit, and connected devices.</p>
+          <ul class="feature-list">
+            <li>Apple HealthKit and Google Health Connect</li>
+            <li>Automated trend analysis and alerts</li>
+            <li>Customizable thresholds per patient</li>
+            <li>Device-agnostic data ingestion</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="section how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">How It Works</span>
+        <h2 class="section-title">Three Steps to<br><span class="gradient-text">Better Health Management</span></h2>
+        <p class="section-subtitle">Getting started with ClawHealth takes minutes, not months. No app downloads required.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <div class="step-content">
+            <h3>Onboard in Minutes</h3>
+            <p>Share your health basics through a simple, secure conversation. ClawHealth imports data from your existing health records using FHIR standards. Your data is encrypted from day one.</p>
+          </div>
+          <div class="step-visual">
+            <div class="phone-mock">
+              <div class="phone-screen">
+                <div class="onboard-msg">Hi! I'm your ClawHealth coordinator. Let's get you set up. What medications are you currently taking?</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <div class="step-content">
+            <h3>AI Manages Your Care</h3>
+            <p>ClawHealth autonomously handles appointment scheduling, medication reminders, vital tracking, and provider communication. It works 24/7, reaching you via SMS, WhatsApp, or voice calls.</p>
+          </div>
+          <div class="step-visual">
+            <div class="activity-feed">
+              <div class="activity-item">
+                <span class="activity-dot blue"></span>
+                <span>Scheduled follow-up with Dr. Martinez</span>
+              </div>
+              <div class="activity-item">
+                <span class="activity-dot green"></span>
+                <span>Medication reminder sent for Lisinopril</span>
+              </div>
+              <div class="activity-item">
+                <span class="activity-dot purple"></span>
+                <span>Blood pressure logged: 128/82 mmHg</span>
+              </div>
+              <div class="activity-item">
+                <span class="activity-dot orange"></span>
+                <span>Progress report sent to care team</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <div class="step-content">
+            <h3>Doctors Stay Informed</h3>
+            <p>Your physicians receive structured updates through a real-time dashboard. Critical alerts are escalated immediately. Routine progress reports are compiled automatically &mdash; no manual charting needed.</p>
+          </div>
+          <div class="step-visual">
+            <div class="dashboard-mock">
+              <div class="dash-header">Physician Dashboard</div>
+              <div class="dash-alert urgent">Urgent: BP reading 165/105 for patient J. Smith</div>
+              <div class="dash-metrics">
+                <div class="dash-metric">
+                  <span class="dm-value">94%</span>
+                  <span class="dm-label">Med Adherence</span>
+                </div>
+                <div class="dash-metric">
+                  <span class="dm-value">12</span>
+                  <span class="dm-label">Active Patients</span>
+                </div>
+                <div class="dash-metric">
+                  <span class="dm-value">3h 24m</span>
+                  <span class="dm-label">CCM Time</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HIPAA & Security Section -->
+  <section class="section hipaa-section" id="hipaa">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Security & Compliance</span>
+        <h2 class="section-title">HIPAA Compliant by Design,<br><span class="gradient-text">Not by Afterthought</span></h2>
+        <p class="section-subtitle">Security isn't a feature we added &mdash; it's the foundation we built on. Every layer of ClawHealth is engineered for healthcare-grade data protection.</p>
+      </div>
+
+      <div class="hipaa-grid">
+        <div class="hipaa-card">
+          <div class="hipaa-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+              <circle cx="12" cy="16" r="1"/>
+            </svg>
+          </div>
+          <h3>Per-Patient Encryption</h3>
+          <p>Every patient gets an isolated, encrypted container. Data at rest uses AES-256 via SQLCipher. Data in transit is protected with TLS 1.3. Even we can't read your health data.</p>
+        </div>
+
+        <div class="hipaa-card">
+          <div class="hipaa-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+          </div>
+          <h3>HIPAA BAA Coverage</h3>
+          <p>Full Business Associate Agreements with all infrastructure providers including AI model providers. Complete audit trails for every data access, meeting the strictest compliance requirements.</p>
+        </div>
+
+        <div class="hipaa-card">
+          <div class="hipaa-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 8h20M8 8v13"/>
+              <path d="M12 12h4M12 16h4"/>
+            </svg>
+          </div>
+          <h3>Complete Audit Trails</h3>
+          <p>Every interaction, data access, and AI decision is logged immutably. HIPAA-required audit trails are maintained automatically with tamper-evident checksums.</p>
+        </div>
+
+        <div class="hipaa-card">
+          <div class="hipaa-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+            </svg>
+          </div>
+          <h3>Patient Data Isolation</h3>
+          <p>Each patient runs in a dedicated Docker container with memory limits, network isolation, and zero shared state. A breach of one patient cannot affect another.</p>
+        </div>
+
+        <div class="hipaa-card">
+          <div class="hipaa-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <h3>Safety Validation Layer</h3>
+          <p>Every AI response passes through a secondary clinical safety validator before reaching the patient. Emergency keywords trigger immediate escalation. When in doubt, we escalate to a human.</p>
+        </div>
+
+        <div class="hipaa-card">
+          <div class="hipaa-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>
+              <path d="M9 13h6M9 17h6"/>
+            </svg>
+          </div>
+          <h3>FHIR R4 Compliance</h3>
+          <p>All health data follows HL7 FHIR R4 standards for maximum interoperability. ICD-10 coded conditions, structured medication records, and standardized vital formats.</p>
+        </div>
+      </div>
+
+      <div class="hipaa-cta">
+        <p>Need to review our security documentation?</p>
+        <a href="#contact" class="btn btn-outline">Request Security Whitepaper</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Use Cases Section -->
+  <section class="section use-cases" id="use-cases">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Use Cases</span>
+        <h2 class="section-title">Built for Every<br><span class="gradient-text">Healthcare Scenario</span></h2>
+      </div>
+
+      <div class="usecase-tabs">
+        <button class="usecase-tab active" data-tab="chronic">Chronic Disease Management</button>
+        <button class="usecase-tab" data-tab="elderly">Elderly Care</button>
+        <button class="usecase-tab" data-tab="postop">Post-Surgical Recovery</button>
+        <button class="usecase-tab" data-tab="mental">Mental Health Support</button>
+      </div>
+
+      <div class="usecase-panels">
+        <div class="usecase-panel active" id="panel-chronic">
+          <div class="usecase-content">
+            <h3>Chronic Disease Management</h3>
+            <p>For patients managing diabetes, hypertension, heart disease, or other chronic conditions, ClawHealth provides continuous autonomous monitoring and care coordination.</p>
+            <ul class="usecase-benefits">
+              <li>
+                <strong>Daily Medication Adherence</strong>
+                <span>Smart reminders that adapt to your schedule and track compliance rates for your care team</span>
+              </li>
+              <li>
+                <strong>Vital Sign Trending</strong>
+                <span>Automatic glucose, blood pressure, and weight tracking with anomaly detection</span>
+              </li>
+              <li>
+                <strong>Proactive Escalation</strong>
+                <span>If your A1C trends upward or BP spikes, your doctor is alerted before the next visit</span>
+              </li>
+              <li>
+                <strong>Care Plan Compliance</strong>
+                <span>AI ensures you follow evidence-based care plans with gentle nudges and check-ins</span>
+              </li>
+            </ul>
+          </div>
+          <div class="usecase-visual">
+            <div class="metric-card">
+              <div class="metric-header">Diabetes Management Dashboard</div>
+              <div class="metric-row">
+                <span class="metric-label">Glucose (Fasting)</span>
+                <span class="metric-value good">102 mg/dL</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">A1C</span>
+                <span class="metric-value good">6.8%</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Med Adherence</span>
+                <span class="metric-value good">96%</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Blood Pressure</span>
+                <span class="metric-value warning">138/88</span>
+              </div>
+              <div class="metric-chart">
+                <div class="chart-bars">
+                  <div class="chart-bar" style="height: 60%"></div>
+                  <div class="chart-bar" style="height: 45%"></div>
+                  <div class="chart-bar" style="height: 70%"></div>
+                  <div class="chart-bar" style="height: 55%"></div>
+                  <div class="chart-bar" style="height: 40%"></div>
+                  <div class="chart-bar" style="height: 50%"></div>
+                  <div class="chart-bar" style="height: 35%"></div>
+                </div>
+                <span class="chart-label">7-Day Glucose Trend</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="usecase-panel" id="panel-elderly">
+          <div class="usecase-content">
+            <h3>Elderly Care Coordination</h3>
+            <p>For aging parents and elderly patients who need help managing complex medication regimens, multiple specialists, and daily health monitoring.</p>
+            <ul class="usecase-benefits">
+              <li>
+                <strong>Simple SMS Interface</strong>
+                <span>No apps to download. Communicate via text messages or phone calls in plain language</span>
+              </li>
+              <li>
+                <strong>Family Caregiver Updates</strong>
+                <span>Designated family members receive regular health summaries and urgent alerts</span>
+              </li>
+              <li>
+                <strong>Fall Detection Integration</strong>
+                <span>Connects with wearable devices to detect falls and trigger emergency protocols</span>
+              </li>
+              <li>
+                <strong>Polypharmacy Safety</strong>
+                <span>Cross-checks 10+ medications for dangerous interactions that are common in elderly care</span>
+              </li>
+            </ul>
+          </div>
+          <div class="usecase-visual">
+            <div class="metric-card">
+              <div class="metric-header">Elderly Care Overview</div>
+              <div class="metric-row">
+                <span class="metric-label">Active Medications</span>
+                <span class="metric-value">8 medications</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Interactions Checked</span>
+                <span class="metric-value good">28 pairs clear</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Next Appointment</span>
+                <span class="metric-value">Feb 12, Cardiology</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Caregiver Alerts</span>
+                <span class="metric-value good">All normal</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="usecase-panel" id="panel-postop">
+          <div class="usecase-content">
+            <h3>Post-Surgical Recovery</h3>
+            <p>Structured post-operative monitoring ensures patients follow recovery protocols, track symptoms, and alert surgeons to complications early.</p>
+            <ul class="usecase-benefits">
+              <li>
+                <strong>Recovery Milestone Tracking</strong>
+                <span>Guided recovery with daily check-ins tailored to your specific procedure</span>
+              </li>
+              <li>
+                <strong>Wound Monitoring</strong>
+                <span>Regular symptom assessment for signs of infection or complications</span>
+              </li>
+              <li>
+                <strong>Pain Management</strong>
+                <span>Track pain levels and medication usage to optimize recovery and prevent overuse</span>
+              </li>
+              <li>
+                <strong>Surgeon Alerts</strong>
+                <span>Automatic alerts to your surgical team if recovery deviates from expected trajectory</span>
+              </li>
+            </ul>
+          </div>
+          <div class="usecase-visual">
+            <div class="metric-card">
+              <div class="metric-header">Post-Op Day 5 — Knee Replacement</div>
+              <div class="metric-row">
+                <span class="metric-label">Pain Level</span>
+                <span class="metric-value warning">4/10 (down from 7)</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Range of Motion</span>
+                <span class="metric-value good">75 degrees</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Wound Status</span>
+                <span class="metric-value good">No signs of infection</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">PT Session</span>
+                <span class="metric-value">Tomorrow 10:00 AM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="usecase-panel" id="panel-mental">
+          <div class="usecase-content">
+            <h3>Mental Health Support</h3>
+            <p>Compassionate, always-available support for patients managing anxiety, depression, or other mental health conditions between therapy sessions.</p>
+            <ul class="usecase-benefits">
+              <li>
+                <strong>Mood Tracking</strong>
+                <span>Daily check-ins to track mood patterns and identify triggers over time</span>
+              </li>
+              <li>
+                <strong>Crisis Detection</strong>
+                <span>Recognizes signs of crisis and immediately connects patients with help resources</span>
+              </li>
+              <li>
+                <strong>Therapist Updates</strong>
+                <span>Between-session summaries help therapists understand progress and adjust treatment</span>
+              </li>
+              <li>
+                <strong>Coping Strategies</strong>
+                <span>Evidence-based techniques delivered in the moment when patients need them most</span>
+              </li>
+            </ul>
+          </div>
+          <div class="usecase-visual">
+            <div class="metric-card">
+              <div class="metric-header">Mental Health Weekly Summary</div>
+              <div class="metric-row">
+                <span class="metric-label">Average Mood</span>
+                <span class="metric-value good">7.2/10 (up from 5.8)</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Sleep Quality</span>
+                <span class="metric-value good">7.5 hrs avg</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Anxiety Episodes</span>
+                <span class="metric-value warning">2 this week</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Next Session</span>
+                <span class="metric-value">Thursday 3:00 PM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technology Architecture -->
+  <section class="section tech-section" id="technology">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Architecture</span>
+        <h2 class="section-title">Enterprise-Grade<br><span class="gradient-text">AI Infrastructure</span></h2>
+        <p class="section-subtitle">Built on proven, scalable technology with healthcare-specific optimizations at every layer.</p>
+      </div>
+
+      <div class="arch-diagram">
+        <div class="arch-layer">
+          <div class="arch-label">Patient Channels</div>
+          <div class="arch-items">
+            <div class="arch-item">SMS (Twilio)</div>
+            <div class="arch-item">WhatsApp</div>
+            <div class="arch-item">Voice Calls</div>
+            <div class="arch-item">Companion App</div>
+          </div>
+        </div>
+        <div class="arch-arrow">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5v14m0 0l-4-4m4 4l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="arch-layer highlight">
+          <div class="arch-label">ClawHealth AI Engine</div>
+          <div class="arch-items">
+            <div class="arch-item accent">Clinical Reasoning (Claude)</div>
+            <div class="arch-item accent">Safety Validator</div>
+            <div class="arch-item accent">Skill Registry</div>
+            <div class="arch-item accent">Health Memory (FHIR)</div>
+          </div>
+        </div>
+        <div class="arch-arrow">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5v14m0 0l-4-4m4 4l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="arch-layer">
+          <div class="arch-label">Healthcare Skills</div>
+          <div class="arch-items">
+            <div class="arch-item">Medication Manager</div>
+            <div class="arch-item">Vitals Monitor</div>
+            <div class="arch-item">Appointment Scheduler</div>
+            <div class="arch-item">Escalation Engine</div>
+          </div>
+        </div>
+        <div class="arch-arrow">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5v14m0 0l-4-4m4 4l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="arch-layer">
+          <div class="arch-label">Secure Data Layer</div>
+          <div class="arch-items">
+            <div class="arch-item">SQLCipher (AES-256)</div>
+            <div class="arch-item">ChromaDB (RAG)</div>
+            <div class="arch-item">Redis (Queue)</div>
+            <div class="arch-item">Audit Logs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section testimonials-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Testimonials</span>
+        <h2 class="section-title">Trusted by Healthcare<br><span class="gradient-text">Professionals</span></h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <blockquote>"ClawHealth has transformed how I manage my chronic disease patients. The automated progress reports save me hours each week, and the alert system has caught critical issues I might have missed between visits."</blockquote>
+          <div class="testimonial-author">
+            <div class="author-avatar">DM</div>
+            <div>
+              <strong>Dr. Maria Santos</strong>
+              <span>Internal Medicine, Cleveland Clinic</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <blockquote>"As a caregiver for my elderly mother, ClawHealth gives me peace of mind. It manages her 8 medications, reminds her of appointments, and alerts me if anything seems off. It's like having a nurse on call 24/7."</blockquote>
+          <div class="testimonial-author">
+            <div class="author-avatar">JR</div>
+            <div>
+              <strong>James Rodriguez</strong>
+              <span>Family Caregiver</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <blockquote>"The HIPAA compliance and patient isolation architecture gave our compliance team confidence. We deployed ClawHealth across our network and saw a 40% reduction in missed appointments within the first quarter."</blockquote>
+          <div class="testimonial-author">
+            <div class="author-avatar">SK</div>
+            <div>
+              <strong>Sarah Kim, MD, MBA</strong>
+              <span>Chief Medical Officer, HealthFirst Network</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="section pricing-section" id="pricing">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Pricing</span>
+        <h2 class="section-title">Simple, Transparent<br><span class="gradient-text">Healthcare Pricing</span></h2>
+        <p class="section-subtitle">No hidden fees. No per-message charges. Choose the plan that fits your needs.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3>Personal</h3>
+            <p class="pricing-desc">For individuals managing their own health</p>
+          </div>
+          <div class="pricing-price">
+            <span class="price-amount">$29</span>
+            <span class="price-period">/month</span>
+          </div>
+          <ul class="pricing-features">
+            <li>Unlimited AI health conversations</li>
+            <li>Medication interaction checking</li>
+            <li>Appointment scheduling</li>
+            <li>SMS and WhatsApp support</li>
+            <li>Basic vital tracking</li>
+            <li>1 physician connection</li>
+          </ul>
+          <a href="#waitlist" class="btn btn-outline btn-block">Get Started</a>
+        </div>
+
+        <div class="pricing-card featured">
+          <div class="pricing-badge">Most Popular</div>
+          <div class="pricing-header">
+            <h3>Family</h3>
+            <p class="pricing-desc">For families and caregivers</p>
+          </div>
+          <div class="pricing-price">
+            <span class="price-amount">$79</span>
+            <span class="price-period">/month</span>
+          </div>
+          <ul class="pricing-features">
+            <li>Everything in Personal</li>
+            <li>Up to 5 family members</li>
+            <li>Caregiver alerts and dashboards</li>
+            <li>Voice call support</li>
+            <li>Advanced vital monitoring</li>
+            <li>Unlimited physician connections</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="#waitlist" class="btn btn-primary btn-block">Get Started</a>
+        </div>
+
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3>Enterprise</h3>
+            <p class="pricing-desc">For healthcare organizations</p>
+          </div>
+          <div class="pricing-price">
+            <span class="price-amount">Custom</span>
+          </div>
+          <ul class="pricing-features">
+            <li>Everything in Family</li>
+            <li>Unlimited patients</li>
+            <li>EHR/EMR integration</li>
+            <li>Custom skill development</li>
+            <li>Dedicated infrastructure</li>
+            <li>CCM billing integration</li>
+            <li>SLA guarantee</li>
+            <li>Dedicated support team</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline btn-block">Contact Sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="section faq-section" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">FAQ</span>
+        <h2 class="section-title">Frequently Asked<br><span class="gradient-text">Questions</span></h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question">
+            Is ClawHealth really HIPAA compliant?
+            <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>Yes. ClawHealth is built HIPAA-compliant from the ground up. We maintain Business Associate Agreements (BAAs) with all infrastructure providers, use AES-256 encryption for data at rest and TLS 1.3 for data in transit, provide complete audit trails, and isolate each patient's data in separate encrypted containers. Our architecture has been reviewed by independent security auditors.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            Can ClawHealth replace my doctor?
+            <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>No, and it's not designed to. ClawHealth is a healthcare coordinator, not a replacement for medical professionals. It helps manage the logistics of your care &mdash; scheduling, medication tracking, vital monitoring, and communication &mdash; while keeping your physicians informed and in control. All clinical decisions remain with your care team.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            What happens in a medical emergency?
+            <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>ClawHealth has a built-in emergency detection system that recognizes keywords and patterns associated with medical emergencies (chest pain, difficulty breathing, severe allergic reactions, etc.). When detected, the AI immediately provides 911 guidance, alerts your emergency contacts, and notifies your physician. Safety is our highest priority.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            Do I need to download an app?
+            <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>No. ClawHealth works through SMS, WhatsApp, and voice calls &mdash; channels you already use. There's no app to download or learn. Simply text or call your ClawHealth number to start. We also offer an optional companion app for advanced features like vital dashboards and health history visualization.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            How does ClawHealth integrate with my existing healthcare providers?
+            <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>ClawHealth supports FHIR R4 and HL7 standards for health data interoperability. We integrate with major EHR systems including Epic, Cerner, and Allscripts. Your physician receives a dedicated dashboard with real-time patient updates, alerts, and structured clinical summaries. For enterprise deployments, we offer custom EHR integration support.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            What AI model powers ClawHealth?
+            <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>ClawHealth uses Anthropic's Claude as its clinical reasoning engine, with a HIPAA BAA in place. Every AI response passes through a secondary safety validation layer before reaching the patient. The system uses Retrieval-Augmented Generation (RAG) with clinical guidelines to ensure evidence-based responses. We follow a "when in doubt, escalate" principle.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA / Waitlist Section -->
+  <section class="section cta-section" id="waitlist">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title">Ready to Transform<br>Your Healthcare Experience?</h2>
+        <p class="cta-subtitle">Join the waitlist for early access to ClawHealth AI. Be among the first to experience autonomous, HIPAA-compliant healthcare coordination.</p>
+        <form class="cta-form" id="waitlist-form">
+          <div class="form-row">
+            <input type="text" placeholder="Full Name" class="form-input" required>
+            <input type="email" placeholder="Email Address" class="form-input" required>
+          </div>
+          <div class="form-row">
+            <select class="form-input">
+              <option value="" disabled selected>I am a...</option>
+              <option value="patient">Patient / Individual</option>
+              <option value="caregiver">Family Caregiver</option>
+              <option value="physician">Physician / Provider</option>
+              <option value="administrator">Healthcare Administrator</option>
+              <option value="developer">Developer / Technical</option>
+            </select>
+            <button type="submit" class="btn btn-primary btn-lg">Join Waitlist</button>
+          </div>
+        </form>
+        <p class="cta-note">No credit card required. We'll notify you when early access opens.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" id="contact">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo">
+            <div class="logo-icon">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect width="32" height="32" rx="8" fill="url(#logo-grad-f)"/>
+                <path d="M16 6L16 26M6 16L26 16" stroke="white" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="16" cy="16" r="4" fill="white" opacity="0.3"/>
+                <defs><linearGradient id="logo-grad-f" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#0EA5E9"/><stop offset="1" stop-color="#6366F1"/></linearGradient></defs>
+              </svg>
+            </div>
+            <span class="logo-text">ClawHealth<span class="logo-ai">AI</span></span>
+          </a>
+          <p class="footer-desc">Autonomous AI healthcare coordination. HIPAA compliant. Physician supervised. Always available.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#use-cases">Use Cases</a>
+          <a href="#technology">Architecture</a>
+          <a href="#">API Documentation</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About Us</a>
+          <a href="#">Careers</a>
+          <a href="#">Blog</a>
+          <a href="#">Press Kit</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal & Compliance</h4>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">HIPAA Notice</a>
+          <a href="#">BAA Request</a>
+          <a href="#">Security Whitepaper</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 ClawHealth AI. All rights reserved. ClawHealth is not a medical device and does not provide medical diagnoses or treatment recommendations. Always consult your healthcare provider for medical decisions.</p>
+        <div class="footer-compliance">
+          <span class="compliance-badge">HIPAA</span>
+          <span class="compliance-badge">SOC 2</span>
+          <span class="compliance-badge">FHIR R4</span>
+          <span class="compliance-badge">HITRUST</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
