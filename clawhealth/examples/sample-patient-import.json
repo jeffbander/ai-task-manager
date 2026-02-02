@@ -1,0 +1,377 @@
+{
+  "demographics": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "dateOfBirth": "1965-03-15",
+    "phone": "+15551234567",
+    "email": "jane.doe@email.com",
+    "address": {
+      "street": "123 Main St",
+      "city": "Springfield",
+      "state": "IL",
+      "zip": "62701"
+    },
+    "timezone": "America/Chicago",
+    "language": "en",
+    "emergencyContactName": "John Doe",
+    "emergencyContactPhone": "+15559876543"
+  },
+
+  "conditions": [
+    {
+      "icd10Code": "I10",
+      "description": "Essential Hypertension",
+      "status": "active",
+      "severity": "moderate",
+      "onsetDate": "2020-06-01"
+    },
+    {
+      "icd10Code": "E11.65",
+      "description": "Type 2 Diabetes Mellitus with hyperglycemia",
+      "status": "active",
+      "severity": "moderate",
+      "onsetDate": "2019-11-15"
+    },
+    {
+      "icd10Code": "E78.5",
+      "description": "Hyperlipidemia, unspecified",
+      "status": "active",
+      "severity": "mild",
+      "onsetDate": "2020-06-01"
+    },
+    {
+      "icd10Code": "M54.5",
+      "description": "Low back pain",
+      "status": "active",
+      "severity": "mild",
+      "onsetDate": "2024-09-01"
+    }
+  ],
+
+  "medications": [
+    {
+      "name": "Metformin",
+      "genericName": "metformin hydrochloride",
+      "dose": "1000mg",
+      "frequency": "twice daily",
+      "route": "oral",
+      "prescriber": "Dr. Smith",
+      "startDate": "2019-12-01",
+      "pharmacyName": "CVS Pharmacy",
+      "pharmacyPhone": "+15551112222",
+      "refillsRemaining": 3,
+      "nextRefillDate": "2026-02-15",
+      "instructions": "Take with meals",
+      "status": "active"
+    },
+    {
+      "name": "Lisinopril",
+      "genericName": "lisinopril",
+      "dose": "20mg",
+      "frequency": "once daily",
+      "route": "oral",
+      "prescriber": "Dr. Smith",
+      "startDate": "2020-07-01",
+      "pharmacyName": "CVS Pharmacy",
+      "pharmacyPhone": "+15551112222",
+      "refillsRemaining": 5,
+      "instructions": "Take in the morning",
+      "status": "active"
+    },
+    {
+      "name": "Atorvastatin",
+      "genericName": "atorvastatin calcium",
+      "dose": "40mg",
+      "frequency": "once daily",
+      "route": "oral",
+      "prescriber": "Dr. Smith",
+      "startDate": "2020-07-01",
+      "pharmacyName": "CVS Pharmacy",
+      "pharmacyPhone": "+15551112222",
+      "refillsRemaining": 2,
+      "instructions": "Take at bedtime",
+      "status": "active"
+    },
+    {
+      "name": "Ibuprofen",
+      "genericName": "ibuprofen",
+      "dose": "400mg",
+      "frequency": "as needed",
+      "route": "oral",
+      "prescriber": "Dr. Smith",
+      "instructions": "Take with food. Max 3 times daily for back pain.",
+      "status": "active"
+    }
+  ],
+
+  "labs": [
+    {
+      "testName": "Hemoglobin A1c",
+      "testCode": "4548-4",
+      "value": "7.8",
+      "unit": "%",
+      "referenceRange": "4.0-5.6",
+      "flag": "high",
+      "orderedBy": "Dr. Smith",
+      "collectedAt": "2026-01-10",
+      "resultedAt": "2026-01-12",
+      "labFacility": "Quest Diagnostics",
+      "panelName": "Diabetes Panel"
+    },
+    {
+      "testName": "Fasting Glucose",
+      "testCode": "2345-7",
+      "value": "156",
+      "unit": "mg/dL",
+      "referenceRange": "70-100",
+      "flag": "high",
+      "orderedBy": "Dr. Smith",
+      "collectedAt": "2026-01-10",
+      "resultedAt": "2026-01-12",
+      "labFacility": "Quest Diagnostics",
+      "panelName": "Diabetes Panel"
+    },
+    {
+      "testName": "Total Cholesterol",
+      "testCode": "2093-3",
+      "value": "218",
+      "unit": "mg/dL",
+      "referenceRange": "<200",
+      "flag": "high",
+      "orderedBy": "Dr. Smith",
+      "collectedAt": "2026-01-10",
+      "labFacility": "Quest Diagnostics",
+      "panelName": "Lipid Panel"
+    },
+    {
+      "testName": "LDL Cholesterol",
+      "testCode": "2089-1",
+      "value": "138",
+      "unit": "mg/dL",
+      "referenceRange": "<100",
+      "flag": "high",
+      "orderedBy": "Dr. Smith",
+      "collectedAt": "2026-01-10",
+      "labFacility": "Quest Diagnostics",
+      "panelName": "Lipid Panel"
+    },
+    {
+      "testName": "HDL Cholesterol",
+      "testCode": "2085-9",
+      "value": "42",
+      "unit": "mg/dL",
+      "referenceRange": ">40",
+      "flag": "normal",
+      "orderedBy": "Dr. Smith",
+      "collectedAt": "2026-01-10",
+      "labFacility": "Quest Diagnostics",
+      "panelName": "Lipid Panel"
+    },
+    {
+      "testName": "Triglycerides",
+      "testCode": "2571-8",
+      "value": "190",
+      "unit": "mg/dL",
+      "referenceRange": "<150",
+      "flag": "high",
+      "orderedBy": "Dr. Smith",
+      "collectedAt": "2026-01-10",
+      "labFacility": "Quest Diagnostics",
+      "panelName": "Lipid Panel"
+    },
+    {
+      "testName": "Creatinine",
+      "testCode": "2160-0",
+      "value": "0.9",
+      "unit": "mg/dL",
+      "referenceRange": "0.6-1.2",
+      "flag": "normal",
+      "orderedBy": "Dr. Smith",
+      "collectedAt": "2026-01-10",
+      "labFacility": "Quest Diagnostics",
+      "panelName": "BMP"
+    },
+    {
+      "testName": "eGFR",
+      "testCode": "48642-3",
+      "value": "82",
+      "unit": "mL/min/1.73m2",
+      "referenceRange": ">60",
+      "flag": "normal",
+      "orderedBy": "Dr. Smith",
+      "collectedAt": "2026-01-10",
+      "labFacility": "Quest Diagnostics",
+      "panelName": "BMP"
+    },
+    {
+      "testName": "Potassium",
+      "testCode": "2823-3",
+      "value": "4.2",
+      "unit": "mEq/L",
+      "referenceRange": "3.5-5.0",
+      "flag": "normal",
+      "orderedBy": "Dr. Smith",
+      "collectedAt": "2026-01-10",
+      "labFacility": "Quest Diagnostics",
+      "panelName": "BMP"
+    }
+  ],
+
+  "imaging": [
+    {
+      "studyType": "X-ray",
+      "bodyPart": "Lumbar Spine",
+      "modality": "xray",
+      "indication": "Chronic low back pain, evaluate for degenerative changes",
+      "findings": "Mild degenerative disc disease at L4-L5 and L5-S1. No fracture or subluxation. Facet arthropathy at L4-L5.",
+      "impression": "Mild degenerative changes. No acute abnormality. Clinical correlation recommended.",
+      "orderedBy": "Dr. Smith",
+      "performedAt": "2024-10-15",
+      "facility": "Springfield Medical Imaging",
+      "radiologist": "Dr. Johnson",
+      "status": "completed",
+      "followUpNeeded": false
+    },
+    {
+      "studyType": "Echocardiogram",
+      "bodyPart": "Heart",
+      "modality": "ultrasound",
+      "indication": "Hypertension, evaluate cardiac structure",
+      "findings": "Normal LV size and function. EF 60%. Mild LVH. No valvular abnormality. Normal diastolic function.",
+      "impression": "Mild LVH consistent with hypertension. Otherwise normal echocardiogram.",
+      "orderedBy": "Dr. Smith",
+      "performedAt": "2025-06-20",
+      "facility": "Springfield Cardiology",
+      "radiologist": "Dr. Williams",
+      "status": "completed",
+      "followUpNeeded": true,
+      "followUpNotes": "Repeat in 1-2 years to monitor LVH"
+    }
+  ],
+
+  "notes": [
+    {
+      "noteType": "progress",
+      "author": "Dr. Smith",
+      "authorRole": "PCP",
+      "content": "Patient presents for routine follow-up of HTN, T2DM, and hyperlipidemia. Reports good medication compliance but admits to missing evening Metformin doses 2-3x/week. Diet has been inconsistent — eating out frequently due to work schedule. Back pain is manageable with ibuprofen PRN.\n\nVitals: BP 142/88, HR 76, Wt 198 lbs (BMI 31.2)\n\nAssessment:\n1. T2DM — A1c 7.8%, up from 7.2% six months ago. Need to improve adherence and diet.\n2. HTN — Suboptimally controlled. Consider titrating Lisinopril vs adding second agent.\n3. Hyperlipidemia — LDL 138, above goal of <100 for diabetic patient.\n4. Low back pain — stable, conservative management.\n\nPlan:\n1. Reinforce medication adherence, especially evening Metformin. Consider switching to Metformin XR once daily.\n2. Recheck BP in 2 weeks. If still elevated, add amlodipine 5mg.\n3. Increase atorvastatin to 80mg if LDL not at goal in 3 months.\n4. Referral to nutritionist for diabetes diet counseling.\n5. Continue ibuprofen PRN for back pain.\n6. Labs in 3 months: A1c, lipid panel, BMP.",
+      "summary": "Routine follow-up. A1c up to 7.8%, BP 142/88. Medication adherence needs improvement. Plan to optimize BP and lipid control.",
+      "dateOfService": "2026-01-15",
+      "diagnoses": ["E11.65", "I10", "E78.5", "M54.5"],
+      "planItems": [
+        "Improve Metformin adherence",
+        "Recheck BP in 2 weeks",
+        "Consider increasing atorvastatin",
+        "Nutritionist referral",
+        "Labs in 3 months"
+      ]
+    },
+    {
+      "noteType": "phone",
+      "author": "Nurse Maria",
+      "authorRole": "RN",
+      "content": "Phone call with patient to discuss lab results. A1c elevated at 7.8%. Patient aware and motivated to improve. Reviewed importance of taking Metformin consistently. Patient says work schedule makes it hard to remember evening dose. Suggested setting phone alarm. Patient agrees to try.",
+      "dateOfService": "2026-01-13"
+    }
+  ],
+
+  "insurance": {
+    "primary": {
+      "payerName": "Blue Cross Blue Shield",
+      "planName": "PPO Gold",
+      "memberId": "XYZ123456789",
+      "groupNumber": "GRP-5544",
+      "subscriberName": "Jane Doe",
+      "subscriberRelationship": "self",
+      "effectiveDate": "2025-01-01",
+      "copay": "$30 PCP / $50 Specialist",
+      "deductible": "$1,500",
+      "deductibleMet": "$350",
+      "outOfPocketMax": "$6,000",
+      "outOfPocketMet": "$580",
+      "phone": "+18001234567"
+    },
+    "hasReferralRequirement": false,
+    "priorAuthNotes": "Prior auth needed for MRI, CT, and specialty medications"
+  },
+
+  "allergies": [
+    {
+      "allergen": "Penicillin",
+      "type": "drug",
+      "reaction": "Rash, hives",
+      "severity": "moderate",
+      "status": "active"
+    },
+    {
+      "allergen": "Sulfa drugs",
+      "type": "drug",
+      "reaction": "GI upset",
+      "severity": "mild",
+      "status": "active"
+    }
+  ],
+
+  "appointments": [
+    {
+      "providerName": "Dr. Smith",
+      "providerSpecialty": "Internal Medicine",
+      "location": "Springfield Medical Center, Suite 200",
+      "datetime": "2026-02-15T10:30:00",
+      "durationMinutes": 30,
+      "type": "follow_up",
+      "reason": "BP recheck, medication review",
+      "prepInstructions": "Bring home BP readings from past 2 weeks. Fasting not required.",
+      "status": "scheduled"
+    },
+    {
+      "providerName": "Sarah Chen, RD",
+      "providerSpecialty": "Nutrition",
+      "location": "Springfield Wellness Center",
+      "datetime": "2026-02-20T14:00:00",
+      "durationMinutes": 60,
+      "type": "other",
+      "reason": "Diabetes diet counseling - initial visit",
+      "prepInstructions": "Keep a food diary for 3 days before the visit.",
+      "status": "scheduled"
+    }
+  ],
+
+  "vitals": [
+    { "type": "blood_pressure", "value": "142/88", "recordedAt": "2026-01-15", "source": "clinic" },
+    { "type": "heart_rate", "value": "76", "unit": "bpm", "recordedAt": "2026-01-15", "source": "clinic" },
+    { "type": "weight", "value": "198", "unit": "lbs", "recordedAt": "2026-01-15", "source": "clinic" },
+    { "type": "blood_pressure", "value": "138/85", "recordedAt": "2025-10-20", "source": "clinic" },
+    { "type": "weight", "value": "195", "unit": "lbs", "recordedAt": "2025-10-20", "source": "clinic" },
+    { "type": "blood_pressure", "value": "136/82", "recordedAt": "2025-07-10", "source": "clinic" },
+    { "type": "glucose", "value": "145", "unit": "mg/dL", "recordedAt": "2026-01-20", "source": "manual" }
+  ],
+
+  "goals": [
+    {
+      "category": "medication_adherence",
+      "title": "Take Metformin consistently — zero missed doses",
+      "description": "Focus on evening dose. Use phone alarm at 8pm.",
+      "frequency": "daily",
+      "priority": "high"
+    },
+    {
+      "category": "lab_targets",
+      "title": "Get A1c below 7.0%",
+      "description": "Next A1c check in 3 months. Diet and medication adherence are key.",
+      "targetValue": "7.0",
+      "targetUnit": "%",
+      "targetDate": "2026-05-01",
+      "priority": "high"
+    },
+    {
+      "category": "vitals_monitoring",
+      "title": "Keep blood pressure below 130/80",
+      "description": "Daily home BP monitoring. Bring readings to next appointment.",
+      "targetValue": "130/80",
+      "targetUnit": "mmHg",
+      "frequency": "daily",
+      "priority": "high"
+    }
+  ]
+}

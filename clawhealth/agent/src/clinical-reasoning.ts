@@ -213,6 +213,9 @@ Today's date/time: ${new Date().toLocaleString("en-US", { timeZone: context.pati
     if (/\b(appointment|visit|doctor|schedule)\b/.test(lower)) return "appointment";
     if (/\b(pain|hurt|symptom|feel|feeling|nausea|dizzy)\b/.test(lower)) return "symptom";
     if (/\b(blood pressure|bp|heart rate|weight|glucose|sugar)\b/.test(lower)) return "vitals";
+    if (/\b(lab|labs|bloodwork|a1c|cholesterol|test results?|blood test)\b/.test(lower)) return "labs";
+    if (/\b(goal|goals|progress|how am i doing)\b/.test(lower)) return "goals";
+    if (/\b(insurance|copay|deductible|member id|coverage)\b/.test(lower)) return "insurance";
     if (/\b(hi|hello|hey|good morning|good evening)\b/.test(lower)) return "greeting";
     if (/\b(thank|thanks)\b/.test(lower)) return "gratitude";
 
