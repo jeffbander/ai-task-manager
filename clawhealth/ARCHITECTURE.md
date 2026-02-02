@@ -672,6 +672,90 @@ React + Flask stack.
 
 ---
 
+## Patient Onboarding System
+
+### Overview
+
+The onboarding system is a two-phase process that gets patients from zero to fully monitored with minimal friction.
+
+**Phase 1 — Bulk Data Import (clinic staff)**
+
+Clinic staff export patient data from their EHR/EMR and load it via CLI:
+
+```bash
+npx tsx scripts/onboard-patient.ts \
+  --patient-id "patient-jane-doe-001" \
+  --data-file "./patient-data/jane-doe.json" \
+  --encryption-key "$ENCRYPTION_KEY"
+```
+
+The import system accepts a single JSON file containing:
+- Demographics (name, DOB, phone, address, emergency contact)
+- Conditions (ICD-10 coded, with severity and status)
+- Medications (name, dose, frequency, pharmacy, refills)
+- Lab results (test name, value, reference range, flags)
+- Imaging studies (modality, findings, impressions, follow-up)
+- Clinical notes (progress notes, discharge summaries, phone notes)
+- Insurance (primary/secondary plans, copay, deductible, member ID)
+- Allergies (drug, food, environmental)
+- Appointments (provider, location, prep instructions)
+- Vitals history (BP, HR, weight, glucose)
+- Care goals (physician-set goals with targets)
+
+All data is imported atomically in a single transaction. Failed records are logged but don't block the rest of the import. An audit trail entry is created for HIPAA compliance.
+
+**Phase 2 — Conversational Onboarding (patient texts bot)**
+
+When the patient texts the ClawHealth number for the first time, the bot walks them through an 11-step onboarding flow:
+
+```
+welcome -> verify_identity -> confirm_demographics -> confirm_conditions
+-> confirm_medications -> review_labs -> review_imaging -> confirm_insurance
+-> set_goals -> set_communication_prefs -> set_monitoring_prefs -> complete
+```
+
+Design principles:
+- One question at a time via SMS
+- Natural language responses ("yes", "looks good", "skip")
+- Auto-skips sections with no data (no labs? skip lab review)
+- Smart goal suggestions based on conditions and flagged labs
+- Patient controls their monitoring preferences
+- "back" to revisit a step, "help" for guidance
+
+### Database Schema
+
+The onboarding system uses 20+ SQLite tables (SQLCipher encrypted). Key additions beyond the base ARCHITECTURE schema:
+
+| Table | Purpose |
+|---|---|
+| `labs` | Lab results with test codes, values, reference ranges, flags |
+| `imaging` | Imaging studies with modality, findings, impressions |
+| `clinical_notes` | Progress notes, discharge summaries, consult notes |
+| `insurance` | Primary/secondary plans with copay, deductible, member ID |
+| `allergies` | Drug, food, environmental allergies with severity |
+| `patient_goals` | Health goals with category, target values, progress tracking |
+| `goal_checkins` | Goal check-in log with status (on_track, behind, ahead) |
+| `monitoring_rules` | Vitals thresholds, med adherence rules, check-in schedules |
+| `onboarding_state` | State machine for conversational onboarding flow |
+| `data_imports` | Audit trail for bulk data imports |
+| `schema_version` | Database migration tracking |
+
+### Goals & Monitoring
+
+The system auto-generates goal suggestions based on the patient's health profile:
+
+- **Hypertension** -> "Keep blood pressure below 130/80" + daily BP monitoring rule
+- **Diabetes** -> "Manage blood sugar levels" + fasting glucose monitoring rule
+- **Heart failure** -> "Weigh yourself every morning" + weight trend monitoring
+- **Active medications** -> "Take all medications on time" + per-med reminder rules
+- **Flagged labs** (high A1c, high LDL) -> condition-specific lab target goals
+
+Monitoring rules trigger scheduled BullMQ jobs that send SMS check-ins. Vitals readings are checked against thresholds with automatic physician escalation for urgent values.
+
+See [ONBOARDING.md](ONBOARDING.md) for the full onboarding documentation with data format examples.
+
+---
+
 ## Cost Estimates (Per Patient, Per Month)
 
 | Component | Cost |
