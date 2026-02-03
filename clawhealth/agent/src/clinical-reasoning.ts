@@ -144,6 +144,19 @@ Today's date/time: ${new Date().toLocaleString("en-US", { timeZone: context.pati
     context: PatientContext,
     tools: ToolDefinition[]
   ): Promise<ReasoningResult> {
+    // Debug logging
+    console.log('Full API Key:', this.config.apiKey);
+    console.log('Contains mock?', this.config.apiKey.includes('mock'));
+    console.log('Contains demo?', this.config.apiKey.includes('demo'));
+    
+    // Demo mode for testing without real API keys
+    if (this.config.apiKey.includes('mock') || this.config.apiKey.includes('demo')) {
+      console.log('Using mock mode');
+      return this.getMockResponse(userMessage, context);
+    }
+    
+    console.log('Using real Anthropic API');
+
     // Dynamic import to keep module loading fast
     const { default: Anthropic } = await import("@anthropic-ai/sdk");
     const client = new Anthropic({ apiKey: this.config.apiKey });
@@ -173,7 +186,10 @@ Today's date/time: ${new Date().toLocaleString("en-US", { timeZone: context.pati
       tools: tools.map((t) => ({
         name: t.name,
         description: t.description,
-        input_schema: t.input_schema,
+        input_schema: {
+          type: 'object',
+          ...t.input_schema,
+        },
       })),
     });
 
@@ -220,5 +236,54 @@ Today's date/time: ${new Date().toLocaleString("en-US", { timeZone: context.pati
     if (/\b(thank|thanks)\b/.test(lower)) return "gratitude";
 
     return "general";
+  }
+
+  /**
+   * Mock response for demo mode (when using mock API keys)
+   */
+  private getMockResponse(userMessage: string, context: any): { response: string; intent: string; toolCalls?: any[] } {
+    const intent = this.classifyIntent(userMessage);
+    const lower = userMessage.toLowerCase();
+    
+    if (intent === "medication") {
+      if (lower.includes("forgot") || lower.includes("missed")) {
+        return {
+          response: "I see you're asking about a missed medication. Since it's been less than 2 hours from your scheduled time, it's generally okay to take it now. However, let me check with Dr. Bander about your specific medication schedule to make sure. For now, please take your morning dose and I'll send a note to your care team about adjusting your reminder time if needed.",
+          intent,
+          toolCalls: [{
+            name: "medication_reminder",
+            action: "log_missed",
+            medication: "morning_medications"
+          }]
+        };
+      }
+      return {
+        response: "I'm here to help with your medication questions. Can you tell me more about which medication you're asking about?",
+        intent
+      };
+    }
+    
+    if (intent === "greeting") {
+      return {
+        response: "Good morning! I'm your AI health coordinator, working under Dr. Bander's supervision. How are you feeling today? Is there anything I can help you with regarding your health or medications?",
+        intent
+      };
+    }
+
+    if (intent === "symptom") {
+      return {
+        response: "Thank you for letting me know about your symptoms. I'm going to log this information and may need to alert Dr. Bander depending on what you're experiencing. Can you describe your symptoms in more detail?",
+        intent,
+        toolCalls: [{
+          name: "symptom_tracker",
+          action: "log_symptom"
+        }]
+      };
+    }
+
+    return {
+      response: "I'm here to help coordinate your healthcare under Dr. Bander's supervision. I can assist with medication reminders, symptom tracking, appointment scheduling, and answering questions about your care plan. How can I help you today?",
+      intent
+    };
   }
 }

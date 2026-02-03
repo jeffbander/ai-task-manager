@@ -158,11 +158,11 @@ export function generateGoalsSummary(db: any, patientId: string): string {
   for (const goal of goals) {
     msg += `${goalEmoji(goal.category)} ${goal.title}\n`;
 
-    if (goal.current_value && goal.target_value) {
-      msg += `   Progress: ${goal.current_value} / ${goal.target_value}${goal.target_unit ? " " + goal.target_unit : ""}\n`;
+    if (goal.currentValue && goal.targetValue) {
+      msg += `   Progress: ${goal.currentValue} / ${goal.targetValue}${goal.targetUnit ? " " + goal.targetUnit : ""}\n`;
     }
 
-    if (goal.last_check_in) {
+    if (goal.lastCheckIn) {
       const lastCheckIn = getGoalCheckIns(db, goal.id!, 1);
       if (lastCheckIn.length > 0) {
         msg += `   Last check-in: ${lastCheckIn[0].status.replace("_", " ")} (${formatRelativeDate(lastCheckIn[0].checked_in_at)})\n`;

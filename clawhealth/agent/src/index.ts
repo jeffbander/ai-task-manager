@@ -22,7 +22,7 @@ import { SkillRegistry } from "./skill-registry.js";
 
 const logger = pino({ level: process.env.LOG_LEVEL || "info" });
 
-const GATEWAY_WS_URL = process.env.GATEWAY_WS_URL || "ws://localhost:18789/ws";
+const GATEWAY_WS_URL = process.env.GATEWAY_WS_URL || "ws://localhost:19789/ws";
 
 /**
  * Connect to the Gateway via WebSocket (mirrors OpenClaw's Pi agent
