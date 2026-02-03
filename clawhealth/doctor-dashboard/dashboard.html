@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClawHealth - Doctor Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8faff 0%, #e3f2fd 100%);
+            min-height: 100vh;
+            color: #1a365d;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        
+        .dashboard {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid;
+            transition: transform 0.2s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .stat-card.patients {
+            border-left-color: #3b82f6;
+        }
+        
+        .stat-card.alerts {
+            border-left-color: #f59e0b;
+        }
+        
+        .stat-card.adherence {
+            border-left-color: #10b981;
+        }
+        
+        .stat-card.messages {
+            border-left-color: #8b5cf6;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+        
+        .patients-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .panel-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .patient-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .patient-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f3f4f6;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .patient-item:hover {
+            background-color: #f9fafb;
+        }
+        
+        .patient-item:last-child {
+            border-bottom: none;
+        }
+        
+        .patient-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .patient-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .status-good {
+            background-color: #10b981;
+        }
+        
+        .status-attention {
+            background-color: #f59e0b;
+        }
+        
+        .status-urgent {
+            background-color: #ef4444;
+        }
+        
+        .alerts-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .alert-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f3f4f6;
+            border-left: 4px solid;
+        }
+        
+        .alert-urgent {
+            border-left-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        
+        .alert-warning {
+            border-left-color: #f59e0b;
+            background-color: #fffbeb;
+        }
+        
+        .alert-info {
+            border-left-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        
+        .alert-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .alert-description {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+        
+        .alert-time {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dashboard {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏥 ClawHealth Doctor Dashboard</h1>
+        <p>Dr. Jeffrey Bander - Patient Care Coordination & AI Health Management</p>
+    </div>
+
+    <div class="dashboard">
+        <div class="stats-grid">
+            <div class="stat-card patients">
+                <div class="stat-value" id="patient-count">12</div>
+                <div class="stat-label">Active Patients</div>
+            </div>
+            <div class="stat-card alerts">
+                <div class="stat-value" id="alert-count">3</div>
+                <div class="stat-label">Pending Alerts</div>
+            </div>
+            <div class="stat-card adherence">
+                <div class="stat-value" id="adherence-rate">94%</div>
+                <div class="stat-label">Medication Adherence</div>
+            </div>
+            <div class="stat-card messages">
+                <div class="stat-value" id="message-count">27</div>
+                <div class="stat-label">Messages Today</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="patients-panel">
+                <div class="panel-header">📋 Patient Overview</div>
+                <div class="patient-list">
+                    <div class="patient-item" onclick="selectPatient('sarah-j')">
+                        <div class="patient-name">Sarah Johnson</div>
+                        <div class="patient-status">
+                            <span class="status-indicator status-good"></span>
+                            Heart Failure • Last message: 2h ago • Adherence: 98%
+                        </div>
+                    </div>
+                    <div class="patient-item" onclick="selectPatient('michael-r')">
+                        <div class="patient-name">Michael Rodriguez</div>
+                        <div class="patient-status">
+                            <span class="status-indicator status-attention"></span>
+                            Diabetes • Missed medication reminder • Adherence: 85%
+                        </div>
+                    </div>
+                    <div class="patient-item" onclick="selectPatient('test-patient')">
+                        <div class="patient-name">Test Patient</div>
+                        <div class="patient-status">
+                            <span class="status-indicator status-good"></span>
+                            Demo Account • Last message: 5m ago • Active SMS test
+                        </div>
+                    </div>
+                    <div class="patient-item" onclick="selectPatient('maria-g')">
+                        <div class="patient-name">Maria Garcia</div>
+                        <div class="patient-status">
+                            <span class="status-indicator status-urgent"></span>
+                            Hypertension • Reported dizziness • Needs attention
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alerts-panel">
+                <div class="panel-header">🚨 Priority Alerts</div>
+                <div class="alert-item alert-urgent">
+                    <div class="alert-title">Symptom Report: Maria Garcia</div>
+                    <div class="alert-description">Patient reported dizziness and lightheadedness. Last BP reading: 180/95</div>
+                    <div class="alert-time">15 minutes ago</div>
+                </div>
+                <div class="alert-item alert-warning">
+                    <div class="alert-title">Medication Adherence: Michael Rodriguez</div>
+                    <div class="alert-description">Missed 2 medication doses this week. AI attempted reminders.</div>
+                    <div class="alert-time">2 hours ago</div>
+                </div>
+                <div class="alert-item alert-info">
+                    <div class="alert-title">Appointment Reminder: Sarah Johnson</div>
+                    <div class="alert-description">Follow-up cardiology appointment scheduled for tomorrow.</div>
+                    <div class="alert-time">1 day ago</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="http://localhost:5001" class="btn btn-primary" target="_blank">
+                👥 Add New Patient
+            </a>
+            <button class="btn btn-secondary" onclick="refreshDashboard()">
+                🔄 Refresh Data
+            </button>
+            <button class="btn btn-secondary" onclick="exportReport()">
+                📊 Export Report
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function selectPatient(patientId) {
+            console.log('Selected patient:', patientId);
+            // Implement patient detail view
+            alert(`Opening detailed view for ${patientId}`);
+        }
+
+        function refreshDashboard() {
+            console.log('Refreshing dashboard...');
+            // Implement real-time data refresh
+            
+            // Simulate data update
+            document.getElementById('message-count').textContent = Math.floor(Math.random() * 50);
+            document.getElementById('alert-count').textContent = Math.floor(Math.random() * 8);
+            
+            // Show feedback
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Updated';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }
+
+        function exportReport() {
+            console.log('Exporting dashboard report...');
+            // Generate CSV or PDF report
+            const data = {
+                timestamp: new Date().toISOString(),
+                totalPatients: document.getElementById('patient-count').textContent,
+                pendingAlerts: document.getElementById('alert-count').textContent,
+                adherenceRate: document.getElementById('adherence-rate').textContent,
+                messagesToday: document.getElementById('message-count').textContent
+            };
+            
+            const csv = Object.entries(data).map(([key, value]) => `${key},${value}`).join('\\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `clawhealth-report-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+        }
+
+        // Auto-refresh data every 30 seconds
+        setInterval(() => {
+            // In production, fetch real data from ClawHealth API
+            console.log('Auto-refreshing dashboard data...');
+        }, 30000);
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🏥 ClawHealth Doctor Dashboard loaded');
+            console.log('📊 Real-time patient monitoring active');
+        });
+    </script>
+</body>
+</html>

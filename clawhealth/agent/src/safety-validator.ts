@@ -16,6 +16,8 @@
  * - Appropriate tone and empathy
  */
 
+import fetch from "node-fetch";
+
 interface SafetyConfig {
   apiKey: string;
   modelSafety: string;
@@ -42,6 +44,12 @@ export class SafetyValidator {
     patientMessage: string,
     agentResponse: string
   ): Promise<SafetyResult> {
+    // Mock mode for testing without real API keys
+    if (this.config.apiKey.includes('mock') || this.config.apiKey.includes('demo')) {
+      return this.getMockValidationResult(agentResponse);
+    }
+
+    // Use real Anthropic API with actual API key  
     const { default: Anthropic } = await import("@anthropic-ai/sdk");
     const client = new Anthropic({ apiKey: this.config.apiKey });
 
@@ -86,5 +94,36 @@ If the response is safe, respond: {"safe": true, "flags": [], "reason": null}`,
         flags: ["PARSE_ERROR"],
       };
     }
+  }
+
+  /**
+   * Mock validation for demo mode (when using mock API keys)
+   */
+  private getMockValidationResult(agentResponse: string): SafetyResult {
+    const lower = agentResponse.toLowerCase();
+    
+    // Check for obviously unsafe patterns
+    if (lower.includes("diagnose") || lower.includes("you have") || lower.includes("you might have")) {
+      return {
+        safe: false,
+        reason: "Response appears to contain diagnostic language",
+        flags: ["POTENTIAL_DIAGNOSIS"]
+      };
+    }
+    
+    if (lower.includes("stop taking") || lower.includes("start taking") || lower.includes("change your dose")) {
+      return {
+        safe: false,
+        reason: "Response appears to recommend medication changes",
+        flags: ["MEDICATION_ADVICE"]
+      };
+    }
+    
+    // Generally approve safe-looking responses
+    return {
+      safe: true,
+      reason: "Mock validation passed",
+      flags: []
+    };
   }
 }

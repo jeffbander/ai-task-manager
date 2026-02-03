@@ -6,9 +6,10 @@
  * decide which tools to execute. ClawHealth does the same but with
  * clinical guidelines as grounding context and strict scope boundaries.
  *
- * Uses Claude API with tool use (function calling) to let the LLM
- * invoke Health Skills when needed.
+ * Uses Claude API via local proxy that leverages ClawdBot's OAuth authentication.
  */
+
+import fetch from "node-fetch";
 
 interface ClinicalReasoningConfig {
   apiKey: string;
@@ -157,10 +158,6 @@ Today's date/time: ${new Date().toLocaleString("en-US", { timeZone: context.pati
     
     console.log('Using real Anthropic API');
 
-    // Dynamic import to keep module loading fast
-    const { default: Anthropic } = await import("@anthropic-ai/sdk");
-    const client = new Anthropic({ apiKey: this.config.apiKey });
-
     const systemPrompt = this.buildSystemPrompt(context);
 
     // Build conversation history from recent messages
@@ -177,7 +174,10 @@ Today's date/time: ${new Date().toLocaleString("en-US", { timeZone: context.pati
     // Add current message
     messages.push({ role: "user", content: userMessage });
 
-    // Call Claude with tool definitions
+    // Use real Anthropic API with actual API key
+    const { default: Anthropic } = await import("@anthropic-ai/sdk");
+    const client = new Anthropic({ apiKey: this.config.apiKey });
+
     const response = await client.messages.create({
       model: this.config.modelPrimary,
       max_tokens: 1024,

@@ -15,6 +15,10 @@
 
 import WebSocket from "ws";
 import pino from "pino";
+import dotenv from "dotenv";
+
+// Load environment variables
+dotenv.config();
 import { ClinicalReasoning } from "./clinical-reasoning.js";
 import { SafetyValidator } from "./safety-validator.js";
 import { HealthMemory } from "./health-memory.js";

@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClawHealth - Patient Onboarding Wizard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8faff 0%, #e3f2fd 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        
+        .wizard-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .wizard-header {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .wizard-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .wizard-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .progress-bar {
+            display: flex;
+            background: rgba(255,255,255,0.2);
+            margin-top: 1.5rem;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .progress-step {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            font-size: 0.9rem;
+            background: rgba(255,255,255,0.1);
+            border-right: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .progress-step:last-child {
+            border-right: none;
+        }
+        
+        .progress-step.active {
+            background: rgba(255,255,255,0.3);
+            font-weight: 600;
+        }
+        
+        .progress-step.completed {
+            background: rgba(34,197,94,0.3);
+        }
+        
+        .wizard-content {
+            padding: 2rem;
+        }
+        
+        .step {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .medication-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        .medication-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .medication-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .medication-details {
+            flex: 1;
+        }
+        
+        .medication-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .medication-dose {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        
+        .remove-medication {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .add-medication-form {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 0.5rem;
+            align-items: end;
+            margin-top: 1rem;
+        }
+        
+        .btn {
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+        }
+        
+        .btn-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .summary-section {
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .summary-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.75rem;
+        }
+        
+        .summary-content {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        
+        .success-icon {
+            text-align: center;
+            font-size: 4rem;
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+        
+        .deployment-status {
+            background: #f0fdf4;
+            border: 2px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .deployment-step {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+        
+        .deployment-step.completed {
+            color: #059669;
+        }
+        
+        .deployment-step.loading {
+            color: #d97706;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .add-medication-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .wizard-container {
+                margin: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wizard-container">
+        <div class="wizard-header">
+            <h1>🏥 ClawHealth Patient Onboarding</h1>
+            <p>Add a new patient to your AI health coordination system</p>
+            
+            <div class="progress-bar">
+                <div class="progress-step active">📋 Basic Info</div>
+                <div class="progress-step">🩺 Medical History</div>
+                <div class="progress-step">💊 Medications</div>
+                <div class="progress-step">✅ Review & Deploy</div>
+            </div>
+        </div>
+
+        <div class="wizard-content">
+            <!-- Step 1: Basic Information -->
+            <div class="step active" id="step1">
+                <h2>📋 Patient Basic Information</h2>
+                <p style="color: #6b7280; margin-bottom: 2rem;">Enter the patient's essential contact and demographic information.</p>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" required placeholder="John">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" required placeholder="Smith">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dateOfBirth">Date of Birth *</label>
+                        <input type="date" id="dateOfBirth" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" required placeholder="+1 (555) 123-4567">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="john.smith@email.com">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="emergencyContact">Emergency Contact Name</label>
+                        <input type="text" id="emergencyContact" placeholder="Jane Smith">
+                    </div>
+                    <div class="form-group">
+                        <label for="emergencyPhone">Emergency Contact Phone</label>
+                        <input type="tel" id="emergencyPhone" placeholder="+1 (555) 987-6543">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Medical History -->
+            <div class="step" id="step2">
+                <h2>🩺 Medical History</h2>
+                <p style="color: #6b7280; margin-bottom: 2rem;">Add the patient's current medical conditions and relevant history.</p>
+                
+                <div class="form-group">
+                    <label for="conditions">Current Medical Conditions</label>
+                    <textarea id="conditions" rows="4" placeholder="e.g., Heart Failure (NYHA Class II), Type 2 Diabetes, Hypertension"></textarea>
+                    <small style="color: #6b7280;">Enter each condition on a new line or separated by commas</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="allergies">Known Allergies</label>
+                    <textarea id="allergies" rows="3" placeholder="e.g., Penicillin, Shellfish, No known allergies"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="primaryPhysician">Primary Care Physician</label>
+                        <input type="text" id="primaryPhysician" value="Dr. Jeffrey Bander" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="insuranceProvider">Insurance Provider</label>
+                        <input type="text" id="insuranceProvider" placeholder="e.g., BlueCross BlueShield">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="medicalNotes">Additional Medical Notes</label>
+                    <textarea id="medicalNotes" rows="3" placeholder="Any additional relevant medical information..."></textarea>
+                </div>
+            </div>
+
+            <!-- Step 3: Medications -->
+            <div class="step" id="step3">
+                <h2>💊 Current Medications</h2>
+                <p style="color: #6b7280; margin-bottom: 2rem;">Add all current medications with dosages and schedules.</p>
+                
+                <div class="medication-list" id="medicationList">
+                    <p style="text-align: center; color: #9ca3af; font-style: italic;">No medications added yet</p>
+                </div>
+                
+                <div class="add-medication-form">
+                    <div>
+                        <label for="medicationName">Medication Name</label>
+                        <input type="text" id="medicationName" placeholder="e.g., Lisinopril">
+                    </div>
+                    <div>
+                        <label for="medicationDose">Dosage</label>
+                        <input type="text" id="medicationDose" placeholder="e.g., 10mg">
+                    </div>
+                    <div>
+                        <label for="medicationFrequency">Frequency</label>
+                        <select id="medicationFrequency">
+                            <option value="Once daily">Once daily</option>
+                            <option value="Twice daily">Twice daily</option>
+                            <option value="Three times daily">Three times daily</option>
+                            <option value="Four times daily">Four times daily</option>
+                            <option value="As needed">As needed</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>&nbsp;</label>
+                        <button type="button" class="btn btn-secondary" onclick="addMedication()">Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Review & Deploy -->
+            <div class="step" id="step4">
+                <h2>✅ Review & Deploy ClawBox</h2>
+                <p style="color: #6b7280; margin-bottom: 2rem;">Review the patient information and deploy their personal ClawBox.</p>
+                
+                <div class="summary-section">
+                    <div class="summary-title">Patient Information</div>
+                    <div class="summary-content" id="patientSummary"></div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title">Medical Conditions</div>
+                    <div class="summary-content" id="conditionsSummary"></div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title">Current Medications</div>
+                    <div class="summary-content" id="medicationsSummary"></div>
+                </div>
+                
+                <div class="deployment-status" id="deploymentStatus" style="display: none;">
+                    <div class="deployment-step loading">
+                        <span style="margin-right: 0.5rem;">⏳</span>
+                        Creating patient ClawBox container...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Page -->
+            <div class="step" id="success" style="text-align: center;">
+                <div class="success-icon">🎉</div>
+                <h2>ClawBox Successfully Deployed!</h2>
+                <p style="color: #6b7280; margin: 1rem 0 2rem;">Your patient's AI health coordinator is ready.</p>
+                
+                <div class="summary-section" style="text-align: left;">
+                    <div class="summary-title">ClawBox Details</div>
+                    <div class="summary-content">
+                        <strong>Patient ID:</strong> <span id="finalPatientId"></span><br>
+                        <strong>SMS Number:</strong> +19388000613<br>
+                        <strong>Dashboard:</strong> <span id="dashboardUrl"></span><br>
+                        <strong>Status:</strong> ✅ Active and ready for patient communication
+                    </div>
+                </div>
+                
+                <div class="btn-navigation">
+                    <button class="btn btn-primary" onclick="window.open('/dashboard.html', '_blank')">
+                        📊 Open Doctor Dashboard
+                    </button>
+                    <button class="btn btn-secondary" onclick="startNewPatient()">
+                        👥 Add Another Patient
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="btn-navigation" id="navigation">
+                <button class="btn btn-secondary" onclick="previousStep()" id="prevBtn" style="display: none;">
+                    ← Previous
+                </button>
+                <button class="btn btn-primary" onclick="nextStep()" id="nextBtn">
+                    Next →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let medications = [];
+
+        function nextStep() {
+            if (validateCurrentStep()) {
+                if (currentStep < 4) {
+                    currentStep++;
+                    showStep(currentStep);
+                } else if (currentStep === 4) {
+                    deployPatient();
+                }
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        function showStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            
+            // Show current step
+            document.getElementById('step' + step).classList.add('active');
+            
+            // Update progress bar
+            document.querySelectorAll('.progress-step').forEach((s, index) => {
+                s.classList.remove('active', 'completed');
+                if (index + 1 === step) {
+                    s.classList.add('active');
+                } else if (index + 1 < step) {
+                    s.classList.add('completed');
+                }
+            });
+            
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.style.display = step > 1 ? 'block' : 'none';
+            
+            if (step === 4) {
+                nextBtn.textContent = '🚀 Deploy ClawBox';
+                nextBtn.className = 'btn btn-success';
+                updateSummary();
+            } else {
+                nextBtn.textContent = 'Next →';
+                nextBtn.className = 'btn btn-primary';
+            }
+        }
+
+        function validateCurrentStep() {
+            switch(currentStep) {
+                case 1:
+                    const required = ['firstName', 'lastName', 'dateOfBirth', 'phone'];
+                    for (const field of required) {
+                        if (!document.getElementById(field).value.trim()) {
+                            alert(`Please fill in the ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+                            return false;
+                        }
+                    }
+                    break;
+                case 2:
+                    // Medical history is optional, always valid
+                    break;
+                case 3:
+                    // Medications are optional, always valid
+                    break;
+            }
+            return true;
+        }
+
+        function addMedication() {
+            const name = document.getElementById('medicationName').value.trim();
+            const dose = document.getElementById('medicationDose').value.trim();
+            const frequency = document.getElementById('medicationFrequency').value;
+
+            if (!name || !dose) {
+                alert('Please enter medication name and dosage');
+                return;
+            }
+
+            medications.push({ name, dose, frequency });
+            updateMedicationList();
+            
+            // Clear form
+            document.getElementById('medicationName').value = '';
+            document.getElementById('medicationDose').value = '';
+            document.getElementById('medicationFrequency').selectedIndex = 0;
+        }
+
+        function removeMedication(index) {
+            medications.splice(index, 1);
+            updateMedicationList();
+        }
+
+        function updateMedicationList() {
+            const listEl = document.getElementById('medicationList');
+            
+            if (medications.length === 0) {
+                listEl.innerHTML = '<p style="text-align: center; color: #9ca3af; font-style: italic;">No medications added yet</p>';
+                return;
+            }
+
+            listEl.innerHTML = medications.map((med, index) => `
+                <div class="medication-item">
+                    <div class="medication-details">
+                        <div class="medication-name">${med.name}</div>
+                        <div class="medication-dose">${med.dose} - ${med.frequency}</div>
+                    </div>
+                    <button class="remove-medication" onclick="removeMedication(${index})">Remove</button>
+                </div>
+            `).join('');
+        }
+
+        function updateSummary() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const dateOfBirth = document.getElementById('dateOfBirth').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+
+            document.getElementById('patientSummary').innerHTML = `
+                <strong>Name:</strong> ${firstName} ${lastName}<br>
+                <strong>Date of Birth:</strong> ${new Date(dateOfBirth).toLocaleDateString()}<br>
+                <strong>Phone:</strong> ${phone}<br>
+                ${email ? `<strong>Email:</strong> ${email}<br>` : ''}
+            `;
+
+            const conditions = document.getElementById('conditions').value.trim();
+            document.getElementById('conditionsSummary').innerHTML = 
+                conditions || '<em>No conditions specified</em>';
+
+            document.getElementById('medicationsSummary').innerHTML = 
+                medications.length > 0 
+                    ? medications.map(med => `• ${med.name} ${med.dose} (${med.frequency})`).join('<br>')
+                    : '<em>No medications specified</em>';
+        }
+
+        async function deployPatient() {
+            const navigation = document.getElementById('navigation');
+            const deploymentStatus = document.getElementById('deploymentStatus');
+            
+            navigation.style.display = 'none';
+            deploymentStatus.style.display = 'block';
+
+            // Simulate deployment process
+            setTimeout(() => {
+                deploymentStatus.innerHTML = `
+                    <div class="deployment-step completed">
+                        <span style="margin-right: 0.5rem;">✅</span>
+                        ClawBox container created successfully
+                    </div>
+                    <div class="deployment-step loading">
+                        <span style="margin-right: 0.5rem;">⏳</span>
+                        Configuring AI health coordinator...
+                    </div>
+                `;
+            }, 2000);
+
+            setTimeout(() => {
+                deploymentStatus.innerHTML += `
+                    <div class="deployment-step completed">
+                        <span style="margin-right: 0.5rem;">✅</span>
+                        AI health coordinator configured
+                    </div>
+                    <div class="deployment-step loading">
+                        <span style="margin-right: 0.5rem;">⏳</span>
+                        Setting up medication reminders...
+                    </div>
+                `;
+            }, 4000);
+
+            setTimeout(() => {
+                const patientId = 'patient_' + Date.now();
+                const dashboardUrl = `http://localhost:5001/patient/${patientId}`;
+                
+                document.getElementById('finalPatientId').textContent = patientId;
+                document.getElementById('dashboardUrl').innerHTML = `<a href="${dashboardUrl}" target="_blank">${dashboardUrl}</a>`;
+                
+                // Show success page
+                document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+                document.getElementById('success').classList.add('active');
+            }, 6000);
+        }
+
+        function startNewPatient() {
+            // Reset form
+            currentStep = 1;
+            medications = [];
+            document.getElementById('medicationList').innerHTML = '<p style="text-align: center; color: #9ca3af; font-style: italic;">No medications added yet</p>';
+            
+            // Clear all inputs
+            document.querySelectorAll('input, textarea, select').forEach(input => {
+                if (input.id !== 'primaryPhysician') {
+                    input.value = '';
+                }
+            });
+            
+            showStep(1);
+            document.getElementById('navigation').style.display = 'flex';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🏥 ClawHealth Patient Onboarding Wizard loaded');
+        });
+    </script>
+</body>
+</html>
