@@ -108,6 +108,55 @@ function App() {
     }
   }
 
+  // Priority weighting for smart sorting
+  const getPriorityWeight = (priority) => {
+    switch (priority) {
+      case 'urgent':
+        return 4
+      case 'high':
+        return 3
+      case 'medium':
+        return 2
+      case 'low':
+        return 1
+      default:
+        return 2
+    }
+  }
+
+  // Compute a score for how urgent/important a task is
+  const getTaskScore = (task) => {
+    let score = 0
+
+    if (!task.completed) {
+      score += 100
+    }
+
+    score += getPriorityWeight(task.priority) * 10
+
+    if (task.due_date) {
+      const due = new Date(task.due_date).getTime()
+      const now = Date.now()
+      const daysUntilDue = (due - now) / (1000 * 60 * 60 * 24)
+
+      if (daysUntilDue <= 0) {
+        score += 30 // overdue
+      } else if (daysUntilDue <= 2) {
+        score += 20
+      } else if (daysUntilDue <= 7) {
+        score += 10
+      }
+    }
+
+    if (task.created_at) {
+      const created = new Date(task.created_at).getTime()
+      const ageDays = (Date.now() - created) / (1000 * 60 * 60 * 24)
+      score += Math.min(ageDays, 30)
+    }
+
+    return score
+  }
+
   useEffect(() => {
     fetchTasks()
   }, [])
@@ -123,6 +172,12 @@ function App() {
     )
   }
 
+  const focusTasks = tasks
+    .filter((task) => !task.completed)
+    .slice()
+    .sort((a, b) => getTaskScore(b) - getTaskScore(a))
+    .slice(0, 5)
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
@@ -135,6 +190,48 @@ function App() {
             Intelligent task management with natural language processing
           </p>
         </div>
+
+        {/* Today's Focus */}
+        {focusTasks.length > 0 && (
+          <Card className="mb-8 border-indigo-200 bg-indigo-50">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-indigo-600" />
+                Today's Focus
+              </CardTitle>
+              <CardDescription>
+                Top tasks for the day, sorted by urgency, age, and due date.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {focusTasks.map((task) => (
+                <div key={task.id} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Badge className={"text-xs text-white " + getPriorityColor(task.priority)}>
+                      {task.priority ? task.priority.toUpperCase() : 'MEDIUM'}
+                    </Badge>
+                    <div>
+                      <p className="font-medium text-gray-900">{task.title}</p>
+                      {task.category && (
+                        <p className="text-xs text-gray-500">
+                          {task.category}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => toggleTask(task.id, task.completed)}
+                    className="border-indigo-200 text-indigo-700 hover:bg-indigo-50"
+                  >
+                    Mark done
+                  </Button>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
